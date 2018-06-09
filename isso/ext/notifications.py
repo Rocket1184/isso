@@ -37,12 +37,10 @@ class SMTP(object):
 
         self.isso = isso
         self.conf = isso.conf.section("smtp")
-        gh = isso.conf.get("general", "host")
-        if type(gh) == str:
-            self.general_host = gh
-        #if gh is not a string then gh is a list
-        else:
-            self.general_host = gh[0]
+        hosts = list(isso.conf.getiter("general", "host"))
+        # first [general] host url will be used in SMTP notify content
+        self.general_host = hosts[0]
+        logger.info("configured general host: %s", self.general_host)
 
         # test SMTP connectivity
         try:
